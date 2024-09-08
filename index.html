@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>webapp.bot - Coming Soon</title>
+    <title>Coming Soon</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body, html {
@@ -29,8 +29,10 @@
             text-align: center;
             z-index: 1;
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 2rem;
+            padding: 1rem;
             border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
         }
         .message-container {
             display: flex;
@@ -39,14 +41,14 @@
         }
         .message-line {
             color: #0f0;
-            font-size: 2rem;
+            font-size: 1.5rem;
             white-space: nowrap;
             overflow: hidden;
             margin: 0 auto;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
         }
         #message-line2 {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
         .cursor {
             border-right: 0.15em solid #0f0;
@@ -57,11 +59,11 @@
             50% { border-color: #0f0 }
         }
         .glow {
-            font-size: 4rem;
+            font-size: 2.5rem;
             color: #fff;
             text-align: center;
             animation: glow 1s ease-in-out infinite alternate;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
         @keyframes glow {
             from {
@@ -69,6 +71,14 @@
             }
             to {
                 text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px #0ff, 0 0 100px #0ff;
+            }
+        }
+        @media (max-width: 480px) {
+            .glow {
+                font-size: 2rem;
+            }
+            .message-line {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -87,8 +97,11 @@
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
 
         const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
         const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -97,13 +110,17 @@
         const alphabet = katakana + latin + nums;
 
         const fontSize = 16;
-        const columns = canvas.width/fontSize;
+        let columns = canvas.width/fontSize;
 
         const rainDrops = [];
 
-        for( let x = 0; x < columns; x++ ) {
-            rainDrops[x] = 1;
+        function initRainDrops() {
+            columns = canvas.width/fontSize;
+            for(let x = 0; x < columns; x++) {
+                rainDrops[x] = 1;
+            }
         }
+        initRainDrops();
 
         function draw() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -123,7 +140,12 @@
             }
         }
 
-        setInterval(draw, 30);
+        function animate() {
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
 
         // Typing effect
         const text1 = "We are working on it!";
@@ -158,8 +180,8 @@
 
         // Resize canvas when window is resized
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            resizeCanvas();
+            initRainDrops();
         });
     </script>
 </body>
