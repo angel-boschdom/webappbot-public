@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>webapp.bot - Coming Soon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+        }
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .container {
+            text-align: center;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .message-line {
+            color: #0f0;
+            font-size: 2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            margin: 0 auto;
+            letter-spacing: 0.15em;
+        }
+        #message-line2 {
+            margin-top: 1rem;
+        }
+        .cursor {
+            border-right: 0.15em solid #0f0;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #0f0 }
+        }
+        .glow {
+            font-size: 4rem;
+            color: #fff;
+            text-align: center;
+            animation: glow 1s ease-in-out infinite alternate;
+            margin-bottom: 2rem;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff, 0 0 20px #0ff, 0 0 35px #0ff, 0 0 40px #0ff, 0 0 50px #0ff;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px #0ff, 0 0 100px #0ff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-bg"></canvas>
+    <div class="container">
+        <h1 class="glow">webapp.bot</h1>
+        <div class="message-container">
+            <div id="message-line1" class="message-line"></div>
+            <div id="message-line2" class="message-line"></div>
+        </div>
+    </div>
+    <script>
+        // Matrix background
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width/fontSize;
+
+        const rainDrops = [];
+
+        for( let x = 0; x < columns; x++ ) {
+            rainDrops[x] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i*fontSize, rainDrops[i]*fontSize);
+                
+                if(rainDrops[i]*fontSize > canvas.height && Math.random() > 0.975){
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+
+        setInterval(draw, 30);
+
+        // Typing effect
+        const text1 = "We are working on it!";
+        const text2 = "Stay tuned";
+        const speed = 100; // Milliseconds per character
+        let i = 0;
+        let currentLine = 1;
+
+        function typeWriter() {
+            if (currentLine === 1) {
+                if (i < text1.length) {
+                    document.getElementById("message-line1").innerHTML += text1.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    i = 0;
+                    currentLine = 2;
+                    setTimeout(typeWriter, speed * 5); // Pause before starting the second line
+                }
+            } else if (currentLine === 2) {
+                if (i < text2.length) {
+                    document.getElementById("message-line2").innerHTML += text2.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    document.getElementById("message-line2").classList.add("cursor");
+                }
+            }
+        }
+
+        window.onload = typeWriter;
+
+        // Resize canvas when window is resized
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
